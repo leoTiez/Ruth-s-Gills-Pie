@@ -7,3 +7,5 @@ src/__pycache__
 simulations/__pycache__
 training/__pycache__
 examples/__pycache__
+.idea
+*.sif

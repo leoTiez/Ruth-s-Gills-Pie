@@ -1,4 +1,4 @@
-# GillesPy
+# Ruth's Gills Pie: A Rule-Based Gillespie Algorithm for Simulating Particle Interactions With a Polymer in Python
 The advent of high-throughput Next Generation Sequencing (NGS) technology allowed the assessment of interaction profiles
 on a genome-wide scale. Over the years, this has been extended to measure a large variety of different property distribution
 over the entire DNA. However, it can be challenging to link these results back to the actual biological processes. Due
@@ -24,9 +24,9 @@ for protein interactions with the DNA. Yet it can be equally applied to any part
           
 
 ## Installation
-The software requires `python` (`3.6` or higher, tested on `3.8`). If `pip` is installed, run
+The software requires `python` (`3.6` or higher, tested on `3.9`). If `pip` is installed, run
 ```commandline
-python3.8 -m pip install -r requirements.txt
+python3.9 -m pip install -r requirements.txt
 ```
 to download and install all necessary packages.
 
