@@ -61,7 +61,7 @@ def main(args):
                 '--uncertainty=%d '
                 '--n_samples=%d '
                 '--tol=%.10f '
-                '--sampling_boost=%.3f'
+                '--sampling_boost=%.3f '
                 '--save_params '
                 '--save_error '
                 '--seq_momentum=%.4f '
