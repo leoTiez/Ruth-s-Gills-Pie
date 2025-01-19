@@ -5,10 +5,14 @@ import warnings
 
 import torch
 import argparse
+import matplotlib
 
 from src.gillespie import Gillespy
 from src.interactants import UNSPECIFIC, InteractantList, DNASpeciesReactant, DNAReactant, DNA_SPECIES_REACTANT, DNA_REACTANT
 from src.utils import load_unknown_cmd_params
+
+# set agg background globally
+matplotlib.use("Agg")
 
 
 def parse_args(args):
