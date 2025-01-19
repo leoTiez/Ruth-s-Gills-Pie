@@ -9,3 +9,4 @@ training/__pycache__
 examples/__pycache__
 .idea
 *.sif
+.DS_store
