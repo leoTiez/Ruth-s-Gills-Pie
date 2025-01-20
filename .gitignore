@@ -10,3 +10,5 @@ examples/__pycache__
 .idea
 *.sif
 .DS_store
+docs
+jupyter_results
