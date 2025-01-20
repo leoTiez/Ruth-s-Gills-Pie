@@ -18,7 +18,7 @@ N_PROTEINS = 20
 N_CELLS = 100
 
 MIN_PRECISION = 1e-8
-MAX_VAL = 1.
+MAX_VAL = 2.
 
 
 def get_parameters(**kwargs) -> Dict:
@@ -55,7 +55,7 @@ def get_data(
     if do_train:
         data = torch.tensor(np.loadtxt(data_path, delimiter='\t'))
         data = torch.stack([data, data])
-        time_points = torch.tensor([400, 500])
+        time_points = torch.tensor([30, 35])
         data_description = [
             (DNA_SPECIES_REACTANT, interact_dna_species_dict[EX_PROTEIN], state_dna_species_dict[UNSPECIFIC]),
         ]
@@ -120,7 +120,7 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
             (UNSPECIFIC, ASSOCIATED_STATE, DNA_SPECIES_REACTANT),
             (UNSPECIFIC, DEFAULT, DNA_REACTANT)
         ]],
-        c=2e-8
+        c=MIN_PRECISION
     )
     rule_set.add_rule(
         reactants_presence=[[(UNSPECIFIC, ASSOCIATED_STATE, DNA_SPECIES_REACTANT)]],
@@ -142,14 +142,14 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
             (EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT),
             (DNA_TRANSCRIPT, DEFAULT, DNA_REACTANT)
         ]],
-        c=5e-5 if not do_train else np.random.random() * (MAX_VAL - MIN_PRECISION) + MIN_PRECISION
+        c=5e-4 if not do_train else np.random.random() * (MAX_VAL - MIN_PRECISION) + MIN_PRECISION
     )
     # Dissociation
     rule_set.add_rule(
         reactants_presence=[[(EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT), (DNA_TRANSCRIPT, DEFAULT, DNA_REACTANT)]],
         reactants_absence=[],
         products=[[(EX_PROTEIN, DEFAULT, SPECIES_REACTANT), (DNA_TRANSCRIPT, DEFAULT, DNA_REACTANT)]],
-        c=1e-1 if not do_train else np.random.random() * (MAX_VAL - MIN_PRECISION) + MIN_PRECISION,
+        c=1. if not do_train else np.random.random() * (MAX_VAL - MIN_PRECISION) + MIN_PRECISION,
     )
 
     return (

@@ -31,7 +31,7 @@ def main(args):
     smoothing = 100
     n_samples = 1
     uncertainty = 100
-    sampling_time = 500
+    sampling_time = 30
     n_cells = 100
 
     Path('logs').mkdir(exist_ok=True, parents=True)
