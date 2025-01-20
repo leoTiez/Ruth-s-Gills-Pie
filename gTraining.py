@@ -13,8 +13,10 @@ from src.interactants import InteractantList, DNASpeciesReactant, UNSPECIFIC, DN
 from src.utils import load_unknown_cmd_params
 from src.gillespie import Gillespy
 
-# set agg background globally
-matplotlib.use("Agg")
+# ###########################################################
+# When using mac, set agg background globally and comment out
+# ###########################################################
+# matplotlib.use("Agg")
 
 
 def parse_args(args):
