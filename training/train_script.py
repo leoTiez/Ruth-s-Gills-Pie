@@ -34,16 +34,21 @@ def main(args):
     if train_type.lower() == 'single_static':
         train_file = 'examples/singleStatic.py'
         data_path = 'data/simulated-data/single_staticnoforce_data_estimation.tsv'
+        tol = 0.003
+        n_cells = 100
+    elif train_type.lower() == 'single_force':
+        train_file = 'examples/singleForce.py'
+        data_path = 'data/simulated-data/single_forceforce_data_estimation.tsv'
+        tol = 1e-4
+        n_cells = 20
     else:
         raise ValueError('Training type %s not accepted.' % train_type)
 
-    tol = 1e-4
     verbosity = 4
     smoothing = 100
     n_samples = 1
     uncertainty = 100
     sampling_boost = .1
-    n_cells = 100
     n_epoch = 500
     seq_momentum = .0
 

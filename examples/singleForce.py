@@ -10,15 +10,22 @@ from src.dna import DNALayout
 # Global definitions
 EX_PROTEIN = 'particle'
 PROTEINS = [EX_PROTEIN]
+TSS = 'tss'
 DNA_TRANSCRIPT = 'transcript'
+TES = 'tes'
 ASSOCIATED_STATE = 'associated'
 
 DNA_SIZE = 1000
-N_PROTEINS = 20
+N_PROTEINS = 10
 N_CELLS = 100
 
 MIN_PRECISION = 1e-8
-MAX_VAL = 2.
+MAX_VAL_DISSO = 5.
+MAX_VAL_ASSO = 1.
+MIN_P_FORCE = 1e-8
+MAX_P_FORCE = 5.
+MIN_FORCE = 1.
+MAX_FORCE = 200.
 
 
 def get_parameters(**kwargs) -> Dict:
@@ -26,15 +33,15 @@ def get_parameters(**kwargs) -> Dict:
         'dna_size': DNA_SIZE,
         'D': torch.tensor(100.),
         'n_proteins': {EX_PROTEIN: N_PROTEINS},
-        'lr': torch.tensor([0., 0., 1e-6, 1e-2]),  # no training of random association and dissociation
-        'lower_bound': MIN_PRECISION,
-        'upper_bound': MAX_VAL,
-        'lr_force': 0.,  # No force definition in rule set
-        'min_force': 0.,
-        'max_force': 0.,
+        'lr': torch.tensor([0., 0., 1e-6, 1e-2, 1e-2]),  # no training of random association and dissociation
+        'lower_bound': torch.tensor([MIN_PRECISION, 5e-3, MIN_PRECISION, MIN_P_FORCE, MIN_PRECISION]),
+        'upper_bound': torch.tensor([MIN_PRECISION, 5e-3, MAX_VAL_ASSO, MAX_P_FORCE, MAX_VAL_DISSO]),
+        'lr_force': 1.,
+        'min_force': MIN_FORCE,
+        'max_force': MAX_FORCE,
         'momentum': .5,
         'decay': 0.,
-        'save_prefix': 'noforce_data_estimation',
+        'save_prefix': 'force_data_estimation',
         'probing': [(EX_PROTEIN, UNSPECIFIC, DNA_SPECIES_REACTANT)],
         'colours': ['tab:blue'],
         'error_weight': torch.tensor([1.])
@@ -47,7 +54,7 @@ def get_data(
         state_dna_species_dict: Dict[str, int],
         state_dna_dict: Dict[str, int],
         do_train: str = 'False',
-        data_path: str = 'data/simulated-data/noforce_data_estimation.tsv',
+        data_path: str = 'data/simulated-data/force_data_estimation.tsv',
         **kwargs
 ) -> Tuple[torch.Tensor | None, torch.Tensor | None, List[Tuple[str, int, int]] | None, List[str] | None]:
 
@@ -55,7 +62,7 @@ def get_data(
     if do_train:
         data = torch.tensor(np.loadtxt(data_path, delimiter='\t'))
         data = torch.stack([data, data])
-        time_points = torch.tensor([30, 35])
+        time_points = torch.tensor([300, 350])
         data_description = [
             (DNA_SPECIES_REACTANT, interact_dna_species_dict[EX_PROTEIN], state_dna_species_dict[UNSPECIFIC]),
         ]
@@ -73,7 +80,9 @@ def get_dna(
 ) -> DNALayout:
     # define dna specification
     dna_specs = [
-        (100, 700, dna_seg_dict[DNA_TRANSCRIPT]),
+        (100, 200, dna_seg_dict[TSS]),
+        (200, 600, dna_seg_dict[DNA_TRANSCRIPT]),
+        (600, 700, dna_seg_dict[TES]),
     ]
     return DNALayout(DNA_SIZE, dna_specs, device=device)
 
@@ -81,7 +90,7 @@ def get_dna(
 def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_train: str = 'False', **kwargs) -> Tuple:
     do_train = do_train == 'True'
     dna_states = []
-    dna_segments = [DNA_TRANSCRIPT]
+    dna_segments = [TSS, DNA_TRANSCRIPT, TES]
     species_dna_states = [ASSOCIATED_STATE]
 
     # Define particle names to integer IDs that are used by the system
@@ -135,21 +144,35 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
         reactants_presence=[[
             (EX_PROTEIN, UNSPECIFIC, SPECIES_REACTANT),
             (EX_PROTEIN, DEFAULT, DNA_SPECIES_REACTANT),
-            (DNA_TRANSCRIPT, DEFAULT, DNA_REACTANT)
+            (TSS, DEFAULT, DNA_REACTANT)
         ]],
         reactants_absence=[],
         products=[[
             (EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT),
-            (DNA_TRANSCRIPT, DEFAULT, DNA_REACTANT)
+            (TSS, DEFAULT, DNA_REACTANT)
         ]],
-        c=5e-4 if not do_train else np.exp(-15. * np.random.random()) * (MAX_VAL - MIN_PRECISION) + MIN_PRECISION
+        c=5e-4 if not do_train else np.exp(-20. * np.random.random()) * (MAX_VAL_ASSO - MIN_PRECISION) + MIN_PRECISION
+    )
+    # Force
+    rule_set.add_rule(
+        reactants_presence=[[
+            (EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT),
+            ([TSS, DNA_TRANSCRIPT, TES], DEFAULT, DNA_REACTANT)
+        ]],
+        reactants_absence=[],
+        products=[[
+            (EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT),
+            ([TSS, DNA_TRANSCRIPT, TES], DEFAULT, DNA_REACTANT)
+        ]],
+        c=.5 if not do_train else np.random.random() * (MAX_P_FORCE - MIN_P_FORCE) + MIN_P_FORCE,
+        force=100. if not do_train else np.random.random() * (MAX_FORCE - MIN_FORCE) + MIN_FORCE
     )
     # Dissociation
     rule_set.add_rule(
-        reactants_presence=[[(EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT), (DNA_TRANSCRIPT, DEFAULT, DNA_REACTANT)]],
+        reactants_presence=[[(EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT), (TES, DEFAULT, DNA_REACTANT)]],
         reactants_absence=[],
-        products=[[(EX_PROTEIN, DEFAULT, SPECIES_REACTANT), (DNA_TRANSCRIPT, DEFAULT, DNA_REACTANT)]],
-        c=1. if not do_train else np.random.random() * (MAX_VAL - MIN_PRECISION) + MIN_PRECISION,
+        products=[[(EX_PROTEIN, DEFAULT, SPECIES_REACTANT), (TES, DEFAULT, DNA_REACTANT)]],
+        c=1. if not do_train else np.random.random() * (MAX_VAL_DISSO - MIN_PRECISION) + MIN_PRECISION,
     )
 
     return (

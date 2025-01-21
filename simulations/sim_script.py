@@ -24,6 +24,12 @@ def main(args):
 
     if sim_type.lower() == 'single_static':
         sim_file = 'examples/singleStatic.py'
+        n_cells = 100
+        sampling_time = 30
+    elif sim_type.lower() == 'single_force':
+        sim_file = 'examples/singleForce.py'
+        n_cells = 20  # make simulations quicker
+        sampling_time = 300
     else:
         raise ValueError('Simulation type %s not accepted.' % sim_type)
     
@@ -31,11 +37,8 @@ def main(args):
     smoothing = 100
     n_samples = 1
     uncertainty = 100
-    sampling_time = 30
-    n_cells = 100
 
     Path('logs').mkdir(exist_ok=True, parents=True)
-
     os.system(
         '%s gSimulation.py '
         '--simulation_file=%s '

@@ -12,3 +12,4 @@ examples/__pycache__
 .DS_store
 docs
 jupyter_results
+experiments
