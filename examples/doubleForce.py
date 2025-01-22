@@ -82,7 +82,7 @@ def get_data(
             (DNA_SPECIES_REACTANT, interact_dna_species_dict[PARTICLE_B], state_dna_species_dict[UNSPECIFIC]),
         ]
         # data should be of the form time x species x position
-        return time_points, data.reshape(2, 1, -1), data_description, PROTEINS
+        return time_points, data.reshape(2, 2, -1), data_description, PROTEINS
     else:
         return None, None, None, None
 
