@@ -57,7 +57,6 @@ def get_data(
         data_path: str = 'data/simulated-data/force_data_estimation.tsv',
         **kwargs
 ) -> Tuple[torch.Tensor | None, torch.Tensor | None, List[Tuple[str, int, int]] | None, List[str] | None]:
-
     do_train = do_train == 'True'
     if do_train:
         data = torch.tensor(np.loadtxt(data_path, delimiter='\t'))
@@ -164,7 +163,7 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
             (EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT),
             ([TSS, DNA_TRANSCRIPT, TES], DEFAULT, DNA_REACTANT)
         ]],
-        c=.5 if not do_train else np.random.random() * (MAX_P_FORCE - MIN_P_FORCE) + MIN_P_FORCE,
+        c=.5 if not do_train else np.exp(-15 * np.random.random()) * (MAX_P_FORCE - MIN_P_FORCE) + MIN_P_FORCE,
         force=100. if not do_train else np.random.random() * (MAX_FORCE - MIN_FORCE) + MIN_FORCE
     )
     # Dissociation
@@ -172,7 +171,7 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
         reactants_presence=[[(EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT), (TES, DEFAULT, DNA_REACTANT)]],
         reactants_absence=[],
         products=[[(EX_PROTEIN, DEFAULT, SPECIES_REACTANT), (TES, DEFAULT, DNA_REACTANT)]],
-        c=1. if not do_train else np.random.random() * (MAX_VAL_DISSO - MIN_PRECISION) + MIN_PRECISION,
+        c=1. if not do_train else np.exp(-15 * np.random.random()) * (MAX_VAL_DISSO - MIN_PRECISION) + MIN_PRECISION,
     )
 
     return (
