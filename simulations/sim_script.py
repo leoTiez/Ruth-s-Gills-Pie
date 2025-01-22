@@ -30,6 +30,10 @@ def main(args):
         sim_file = 'examples/singleForce.py'
         n_cells = 20  # make simulations quicker
         sampling_time = 300
+    elif sim_type.lower() == 'double_force':
+        sim_file = 'examples/doubleForce.py'
+        n_cells = 20
+        sampling_time = 300
     else:
         raise ValueError('Simulation type %s not accepted.' % sim_type)
     
