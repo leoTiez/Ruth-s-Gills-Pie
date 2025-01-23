@@ -427,7 +427,9 @@ class Gillespy:
             lr_force: Union[torch.Tensor, float],
             decay: Union[torch.Tensor, float],
             error_weight: Union[torch.Tensor, None] = None,
-            max_grad_ratio: float = .1
+            max_grad_ratio: float = .1,
+            noise_theta: float = .05,
+            noise_force: float = .1
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         # expected shape species x positions
         error_grad = self.error_derivative(tp_idx, prediction=seq, weight=error_weight)
@@ -447,11 +449,13 @@ class Gillespy:
                 * error_grad[i_prob].reshape(1, -1, 1, 1),
                 dim=(1, 2, 3)
             )
+            grad_theta += grad_theta * noise_theta * torch.normal(mean=0., std=1., size=grad_theta.shape)
             grad_force += torch.sum(
                 update_force_dt[..., reacts, states]
                 * error_grad[i_prob].reshape(1, -1, 1, 1),
                 dim=(1, 2, 3)
             )
+            grad_force += grad_force * noise_force * torch.normal(mean=0., std=1., size=grad_force.shape)
         grad_theta /= float(len(self.sampler.dna))
         grad_force /= float(len(self.sampler.dna))
         # Apply learning rate and weight decay and clip gradients
@@ -617,6 +621,8 @@ class Gillespy:
             max_grad_ratio: float = .1,
             resample_tol_ratio: float = .3,
             seq_momentum: float = .9,
+            noise_theta: float = 0.05,
+            noise_force: float = 0.1,
             error_weight: Union[None, torch.Tensor] = None,
             eps_boundaries: Union[None, Tuple[float, float, float]] = None, # (.8, 0.005, 300.) (eps start, eps end, eps decline)
             min_t_ratio: float = 5e-3,  # Increase by .5% during exploration
@@ -787,6 +793,8 @@ class Gillespy:
                         decay,
                         error_weight=error_weight,
                         max_grad_ratio=max_grad_ratio,
+                        noise_theta=noise_theta,
+                        noise_force=noise_force
                     )
                     grad_theta += gt
                     grad_force += gf
@@ -823,6 +831,8 @@ class Gillespy:
                     decay,
                     error_weight=error_weight,
                     max_grad_ratio=max_grad_ratio,
+                    noise_theta=noise_theta,
+                    noise_force=noise_force
                 )
                 grad_theta += gt
                 grad_force += gf
