@@ -37,18 +37,21 @@ def main(args):
         tol = 0.003
         sampling_boost = .1
         n_cells = 100
+        n_epoch = 500
     elif train_type.lower() == 'single_force':
         train_file = 'examples/singleForce.py'
         data_path = 'data/simulated-data/single_forceforce_data_estimation.tsv'
-        tol = 1e-4
+        tol = 0.003
         n_cells = 20
-        sampling_boost = .05
+        sampling_boost = .1
+        n_epoch = 700
     elif train_type.lower() == 'double_force':
         train_file = 'examples/doubleForce.py'
         data_path = 'data/simulated-data/double_forcedouble_force_estimation.tsv'
-        tol = 1e-4
+        tol = 0.003
         n_cells = 20
-        sampling_boost = .05
+        sampling_boost = .1
+        n_epoch = 700
     else:
         raise ValueError('Training type %s not accepted.' % train_type)
 
@@ -56,7 +59,6 @@ def main(args):
     smoothing = 100
     n_samples = 1
     uncertainty = 100
-    n_epoch = 500
     seq_momentum = .0
 
     Path('logs/').mkdir(exist_ok=True, parents=True)

@@ -37,17 +37,11 @@ MIN_FORCE = 50.
 MAX_FORCE = 500.
 
 
-def get_parameters(
-        gene_num: str = '0',
-        pad: str = '200',
-        proteins_ratio: str = '.5',
-        **kwargs
-) -> Dict:
-
+def get_parameters(**kwargs) -> Dict:
     parameter_dict = {
         'dna_size': DNA_SIZE,
         'D': torch.tensor(100.),
-        'lr': torch.tensor([0., 0., 1e-5, 1e-2, 1e-3, 1e-1, 1e-2]),
+        'lr': torch.tensor([0., 0., 1e-5, 1e-2, 1e-2, 5e-2, 15e-2]),
         'lr_force': 1.,
         'lower_bound': torch.tensor([MIN_PRECISION, 5e-3, MIN_PRECISION, MIN_PRECISION, MIN_PRECISION, MIN_PRECISION, MIN_PRECISION]),
         'upper_bound': torch.tensor([MIN_PRECISION, 4e-3, MAX_VAL_ASSO, MAX_VAL_DISSO, MAX_VAL_ASSO, MAX_P_FORCE, MAX_VAL_DISSO]),
@@ -55,6 +49,9 @@ def get_parameters(
         'max_force': MAX_FORCE,
         'decay': 0.,
         'momentum': .5,
+        'noise_theta': 1.,
+        'noise_force': 1.,
+        'max_grad_ratio': .5,
         'save_prefix': 'double_force_estimation',
         'probing': [(PARTICLE_A, UNSPECIFIC, DNA_SPECIES_REACTANT), (PARTICLE_B, UNSPECIFIC, DNA_SPECIES_REACTANT)],
         'colours': ['tab:orange', 'tab:green'],

@@ -33,14 +33,17 @@ def get_parameters(**kwargs) -> Dict:
         'dna_size': DNA_SIZE,
         'D': torch.tensor(100.),
         'n_proteins': {EX_PROTEIN: N_PROTEINS},
-        'lr': torch.tensor([0., 0., 1e-6, 1e-2, 1e-2]),  # no training of random association and dissociation
+        'lr': torch.tensor([0., 0., 5e-6, 5e-2, 5e-2]),  # no training of random association and dissociation
         'lower_bound': torch.tensor([MIN_PRECISION, 5e-3, MIN_PRECISION, MIN_P_FORCE, MIN_PRECISION]),
         'upper_bound': torch.tensor([MIN_PRECISION, 5e-3, MAX_VAL_ASSO, MAX_P_FORCE, MAX_VAL_DISSO]),
         'lr_force': 1.,
         'min_force': MIN_FORCE,
         'max_force': MAX_FORCE,
+        'noise_theta': 1.,
+        'noise_force': 1.,
         'momentum': .5,
         'decay': 0.,
+        'max_grad_ratio': .5,
         'save_prefix': 'force_data_estimation',
         'probing': [(EX_PROTEIN, UNSPECIFIC, DNA_SPECIES_REACTANT)],
         'colours': ['tab:blue'],
