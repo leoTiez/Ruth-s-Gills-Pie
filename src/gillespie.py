@@ -629,6 +629,7 @@ class Gillespy:
             dna_init_callback: Union[Callable, None] = None,
             dna_init_data_idc: Union[torch.Tensor, None] = None,
             plotting_window: int = 100,
+            saving_freq: int = 10,
             save_fig: bool = True,
             save_prefix: str = '',
             save_params: bool = False,
@@ -888,7 +889,8 @@ class Gillespy:
                     fig.subplots_adjust(right=0.75)
                     fig.canvas.draw()
                     fig.canvas.flush_events()
-                    fig_list.append(get_img(fig))
+                    if i % saving_freq == 0:
+                        fig_list.append(get_img(fig))
                     if verbosity > 3:
                         print('Parameters')
                         print(self.sampler.rules.get_c().to(torch.device('cpu')))
@@ -915,7 +917,8 @@ class Gillespy:
                         ax_grad.set_title('Gradients iteration: %d' % i)
                         fig_grad.canvas.draw()
                         fig_grad.canvas.flush_events()
-                        gradfig_list.append(get_img(fig_grad))
+                        if i % saving_freq == 0.:
+                            gradfig_list.append(get_img(fig_grad))
 
         if save_fig:
             Path('figures/training').mkdir(parents=True, exist_ok=True)
