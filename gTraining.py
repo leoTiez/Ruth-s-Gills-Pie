@@ -201,6 +201,7 @@ def main(argv):
         sampling_boost=sampling_boost,
         dna_init_callback=dna_init_callback,
         dna_init_data_idc=dna_init_data_idc,
+        resample_tol_ratio=param_dict.get('resample_tol_ratio', .3),
         colors=param_dict['colours'],
         save_fig=save_fig,
         save_prefix=param_dict['save_prefix'],
