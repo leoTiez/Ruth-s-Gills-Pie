@@ -32,6 +32,7 @@ N_CELLS = 100
 MIN_PRECISION = 1e-8
 MAX_VAL_ASSO = 1.
 MAX_VAL_DISSO = 5.
+MIN_P_FORCE = 1e-3
 MAX_P_FORCE = 10.
 MIN_FORCE = 50.
 MAX_FORCE = 500.
@@ -41,22 +42,23 @@ def get_parameters(**kwargs) -> Dict:
     parameter_dict = {
         'dna_size': DNA_SIZE,
         'D': torch.tensor(100.),
-        'lr': torch.tensor([0., 0., 1e-5, 1e-2, 1e-2, 5e-2, 15e-2]),
-        'lr_force': 1.,
+        'lr': torch.tensor([0., 0., 1e-6, 1e-1, 5e-3, 1e-1, 1e-1]),
+        'lr_force': 1e6,
         'lower_bound': torch.tensor([MIN_PRECISION, 5e-3, MIN_PRECISION, MIN_PRECISION, MIN_PRECISION, MIN_PRECISION, MIN_PRECISION]),
-        'upper_bound': torch.tensor([MIN_PRECISION, 4e-3, MAX_VAL_ASSO, MAX_VAL_DISSO, MAX_VAL_ASSO, MAX_P_FORCE, MAX_VAL_DISSO]),
+        'upper_bound': torch.tensor([MIN_PRECISION, 5e-3, MAX_VAL_ASSO, MAX_VAL_DISSO, MAX_VAL_ASSO, MAX_P_FORCE, MAX_VAL_DISSO]),
         'min_force': MIN_FORCE,
         'max_force': MAX_FORCE,
         'decay': 0.,
         'momentum': .5,
-        'noise_theta': 1.,
-        'noise_force': 1.,
+        'noise_theta': 0.,
+        'noise_force': 0.,
         'max_grad_ratio': .5,
         'save_prefix': 'double_force_estimation',
         'probing': [(PARTICLE_A, UNSPECIFIC, DNA_SPECIES_REACTANT), (PARTICLE_B, UNSPECIFIC, DNA_SPECIES_REACTANT)],
         'colours': ['tab:orange', 'tab:green'],
         'n_proteins': {PARTICLE_A: N_PROTEINS * .4, PARTICLE_B: N_PROTEINS * .6},
-        'error_weight': torch.tensor([1., 2.])
+        'error_weight': torch.tensor([1., 1.]),
+        'resample_tol_ratio': .3
     }
     return parameter_dict
 
@@ -73,7 +75,7 @@ def get_data(
     if do_train:
         data = torch.tensor(np.loadtxt(data_path, delimiter='\t'))
         data = torch.stack([data, data])
-        time_points = torch.tensor([300, 350])
+        time_points = torch.tensor([500, 550])
         data_description = [
             (DNA_SPECIES_REACTANT, interact_dna_species_dict[PARTICLE_A], state_dna_species_dict[UNSPECIFIC]),
             (DNA_SPECIES_REACTANT, interact_dna_species_dict[PARTICLE_B], state_dna_species_dict[UNSPECIFIC]),
@@ -167,7 +169,7 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
             (PROMOTER, DEFAULT, DNA_REACTANT),
             (PARTICLE_A, ACTIVE, DNA_SPECIES_REACTANT)
         ]],
-        c=5e-4 if not do_train else np.exp(-20 * np.random.random()) * (MAX_VAL_ASSO - MIN_PRECISION) + MIN_PRECISION
+        c=1e-3 if not do_train else np.exp(-35 * np.random.random()) * (MAX_VAL_ASSO - MIN_PRECISION) + MIN_PRECISION,
     )
 
     # Rad3 Dissociation
@@ -181,7 +183,7 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
             (PROMOTER, DEFAULT, DNA_REACTANT),
             (PARTICLE_A, DEFAULT, SPECIES_REACTANT)
         ]],
-        c=1. if not do_train else np.exp(-15 * np.random.random()) * (MAX_VAL_DISSO - MIN_PRECISION) + MIN_PRECISION
+        c=5e-1 if not do_train else np.exp(-15 * np.random.random()) * (MAX_VAL_DISSO - MIN_PRECISION) + MIN_PRECISION
     )
 
     # ###
@@ -212,7 +214,10 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
                 (PARTICLE_A, DEFAULT, SPECIES_REACTANT)
             ]
         ],
-        c=5e-2 if not do_train else np.exp(-20 * np.random.random()) * (MAX_VAL_ASSO - MIN_PRECISION) + MIN_PRECISION
+        c=5e-2 if not do_train else np.minimum(
+            np.exp(-35 * np.random.random()) * (MAX_VAL_ASSO - MIN_PRECISION) + MIN_PRECISION,
+            5e-4
+        )
     )
 
     # Movement of particle B
@@ -226,7 +231,7 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
             (DNA_SEGMENTS, DEFAULT, DNA_REACTANT),
             (PARTICLE_B, ACTIVE, DNA_SPECIES_REACTANT),
         ]],
-        c=2. if not do_train else np.exp(-10 * np.random.random()) * (MAX_P_FORCE - MIN_PRECISION) + MIN_PRECISION,
+        c=1. if not do_train else MIN_P_FORCE,
         force=200. if not do_train else np.random.random() * (MAX_FORCE - MIN_FORCE) + MIN_FORCE
     )
 

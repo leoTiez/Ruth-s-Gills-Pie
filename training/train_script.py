@@ -44,14 +44,14 @@ def main(args):
         tol = 0.003
         n_cells = 20
         sampling_boost = .1
-        n_epoch = 700
+        n_epoch = 7500
     elif train_type.lower() == 'double_force':
         train_file = 'examples/doubleForce.py'
         data_path = 'data/simulated-data/double_forcedouble_force_estimation.tsv'
-        tol = 0.003
+        tol = 0.0005
         n_cells = 20
-        sampling_boost = .1
-        n_epoch = 700
+        sampling_boost = .01
+        n_epoch = 7500
     else:
         raise ValueError('Training type %s not accepted.' % train_type)
 

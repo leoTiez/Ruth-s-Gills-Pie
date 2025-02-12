@@ -33,14 +33,14 @@ def get_parameters(**kwargs) -> Dict:
         'dna_size': DNA_SIZE,
         'D': torch.tensor(100.),
         'n_proteins': {EX_PROTEIN: N_PROTEINS},
-        'lr': torch.tensor([0., 0., 5e-6, 5e-2, 5e-2]),  # no training of random association and dissociation
+        'lr': torch.tensor([0., 0., 1e-6, 1e-1, 1e-1]),  # no training of random association and dissociation
         'lower_bound': torch.tensor([MIN_PRECISION, 5e-3, MIN_PRECISION, MIN_P_FORCE, MIN_PRECISION]),
         'upper_bound': torch.tensor([MIN_PRECISION, 5e-3, MAX_VAL_ASSO, MAX_P_FORCE, MAX_VAL_DISSO]),
-        'lr_force': 1.,
+        'lr_force': 5e5,
         'min_force': MIN_FORCE,
         'max_force': MAX_FORCE,
-        'noise_theta': 1.,
-        'noise_force': 1.,
+        'noise_theta': .0,
+        'noise_force': .0,
         'momentum': .5,
         'decay': 0.,
         'max_grad_ratio': .5,
@@ -153,7 +153,10 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
             (EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT),
             (TSS, DEFAULT, DNA_REACTANT)
         ]],
-        c=5e-4 if not do_train else np.exp(-20. * np.random.random()) * (MAX_VAL_ASSO - MIN_PRECISION) + MIN_PRECISION
+        c=5e-4 if not do_train else np.minimum(
+            np.exp(-35. * np.random.random()) * (MAX_VAL_ASSO - MIN_PRECISION) + MIN_PRECISION,
+            1e-4
+        )
     )
     # Force
     rule_set.add_rule(
@@ -166,7 +169,8 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
             (EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT),
             ([TSS, DNA_TRANSCRIPT, TES], DEFAULT, DNA_REACTANT)
         ]],
-        c=.5 if not do_train else np.exp(-15 * np.random.random()) * (MAX_P_FORCE - MIN_P_FORCE) + MIN_P_FORCE,
+        # c=.5 if not do_train else np.exp(-15 * np.random.random()) * (MAX_P_FORCE - MIN_P_FORCE) + MIN_P_FORCE,
+        c=.5 if not do_train else MIN_PRECISION,
         force=100. if not do_train else np.random.random() * (MAX_FORCE - MIN_FORCE) + MIN_FORCE
     )
     # Dissociation
