@@ -28,7 +28,7 @@ def main(args):
         sampling_time = 30
     elif sim_type.lower() == 'single_force':
         sim_file = 'examples/singleForce.py'
-        n_cells = 100
+        n_cells = 20
         sampling_time = 300
     elif sim_type.lower() == 'double_force':
         sim_file = 'examples/doubleForce.py'
