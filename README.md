@@ -51,6 +51,24 @@ runtime. In the following, we exemplify Ruth's Gills Pie through DNA-protein int
 Yet it can be equally applied to any particle interactions along a one-dimensional polymer
 (such as ribosomal interactions with an aminoacid chain), as long as distributional data is available.
           
+## Examples
+The first animation shows the training for a moving particle on the polymer. The molecule can only associate to a small
+stretch to the left, needs to move into the polymer, and is dissociated on the right side. We estimate
+two successive time points (dashed lines) to obtain equilibrium dynamics as closely as possible. 
+![training movement single](figures/github/single_force11force_data_estimation_training.gif)
+
+In the following, we show the simulation of a rather complicated pathway with feedback loop. Particle *A* associates to the
+left side of the polymer. This allows association of particle *B* next to it. This triggers the unloading of *A*.
+*B* can then move into the polymer and dissociate from the right side.
+
+![simulation feedback](figures/github/double_forcedouble_force_estimation_simulation_cluster.gif)
+
+In the last example, we aim to fit parameters to the simulation above. We start from an initialisation that makes it impossible
+for *B* to associate. The algorithm grapples with different parameter settings before finding a sensible fit. Note that the algorithm transitions through two phases. Firstly, it approximates the distribution of
+particle *A* that can associate directly to the polymer. Then it fits the the distribution of *B*, which requires
+first increasing the error before finding a better parameter fit.
+
+![training feedback](figures/github/double_force17double_force_estimation_training.gif)
 
 ## Installation
 The software requires `python` (`3.6` or higher, tested on `3.9`). Clone the repository and navigate to the directory. 
@@ -439,25 +457,6 @@ python3.8 gTraining.py --training_file=simulation/yourPathway.py --data_path="my
 
 Unknown parameters are always parsed to string, and you need to convert the parameter accordinly.
 See our examples for more information.
-
-## Examples
-The first animation shows the training for a moving particle on the polymer. The molecule can only associate to a small
-stretch to the left, needs to move into the polymer, and is dissociated on the right side. We estimate
-two successive time points (dashed lines) to obtain equilibrium dynamics as closely as possible. 
-![training movement single](figures/github/single_force11force_data_estimation_training.gif)
-
-In the following, we show the simulation of a rather complicated pathway with feedback loop. Particle *A* associates to the
-left side of the polymer. This allows association of particle *B* next to it. This triggers the unloading of *A*.
-*B* can then move into the polymer and dissociate from the right side.
-
-![simulation feedback](figures/github/double_forcedouble_force_estimation_simulation_cluster.gif)
-
-In the last example, we aim to fit parameters to the simulation above. We start from an initialisation that makes it impossible
-for *B* to associate. The algorithm grapples with different parameter settings before finding a sensible fit. Note that the algorithm transitions through two phases. Firstly, it approximates the distribution of
-particle *A* that can associate directly to the polymer. Then it fits the the distribution of *B*, which requires
-first increasing the error before finding a better parameter fit.
-
-![training feedback](figures/github/double_force17double_force_estimation_training.gif)
 
 
 ## References
