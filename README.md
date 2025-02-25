@@ -24,7 +24,7 @@ or
 }
 ```
 
-*Ruth's Gills Pie* was developed as part of my PhD thesis at [Julie Soutourina's laboratory](https://www.i2bc.paris-saclay.fr/equipe-genome-transcriptional-regulation/).
+*Ruth's Gills Pie* was developed as part of my PhD thesis at [Julie Soutourina's laboratory](https://www.i2bc.paris-saclay.fr/equipe-genome-transcriptional-regulation/) under supervision of Julie Soutourina, Cyril Denby Wilkes, and Arach Goldar.
 
 The following examples and explainers are centred around DNA-protein interactions and sequencing data. However, keep in mind that
 the implementation is general and broadly applicable, even outside a biological context.
