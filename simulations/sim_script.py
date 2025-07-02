@@ -54,7 +54,7 @@ def main(args):
         for i_trial in range(n_trials):
             parallel.apply_async(os.system, args=(
                 '%s gSimulation.py '
-                '--simulation_file=%s_%d '
+                '--simulation_file=%s '
                 '--save_sim_result '
                 '--save_fig '
                 '--verbosity=%d '
@@ -68,7 +68,6 @@ def main(args):
                 '1> logs/out_%s%s%d.out 2> logs/err_%s%s%d.err' % (
                     python_interpreter,
                     sim_file,
-                    i_trial,
                     verbosity,
                     smoothing,
                     n_samples,
@@ -80,6 +79,9 @@ def main(args):
                     trial_prefix, sim_type, i_trial
                 ),
             ))
+
+        parallel.close()
+        parallel.join()
 
 
 if __name__ == '__main__':
