@@ -2,7 +2,7 @@
 (Banner produced using DeepAI's prompt-to-image creator https://deepai.org/machine-learning-model/pop-art-generator)
 # Ruth's Gills Pie: A Rule-Based Gillespie Algorithm for Simulating Particle Interactions With a Polymer in Python
 
-*Ruth's Gills Pie* is a Python framework that simulates and approximates interactions between particles and a polymer based
+*Ruth's Gills Pie* (standing for RUle-based GillesPie algorithm) is a Python framework that simulates and approximates interactions between particles and a polymer based
 on user-defined rules. Any process that involves freely diffusing molecules in a well-mixed solution that interact with a 
 polymeric structure can be simulated. Interaction rates can be fitted to data that measures superimposed and independent instances.
 Ruth's Gills Pie was developed for simulating DNA-protein interactions unfolding in single cells and fitting
@@ -24,7 +24,7 @@ or
 }
 ```
 
-*Ruth's Gills Pie* was developed as part of my PhD thesis at [Julie Soutourina's laboratory](https://www.i2bc.paris-saclay.fr/equipe-genome-transcriptional-regulation/).
+*Ruth's Gills Pie* was developed as part of my PhD thesis at [Julie Soutourina's laboratory](https://www.i2bc.paris-saclay.fr/equipe-genome-transcriptional-regulation/) under supervision of Julie Soutourina, Cyril Denby Wilkes, and Arach Goldar.
 
 The following examples and explainers are centred around DNA-protein interactions and sequencing data. However, keep in mind that
 the implementation is general and broadly applicable, even outside a biological context.
