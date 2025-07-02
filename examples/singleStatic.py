@@ -55,7 +55,7 @@ def get_data(
     if do_train:
         data = torch.tensor(np.loadtxt(data_path, delimiter='\t'))
         data = torch.stack([data, data])
-        time_points = torch.tensor([30, 35])
+        time_points = torch.tensor([130, 150])
         data_description = [
             (DNA_SPECIES_REACTANT, interact_dna_species_dict[EX_PROTEIN], state_dna_species_dict[UNSPECIFIC]),
         ]
