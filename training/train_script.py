@@ -34,7 +34,7 @@ def main(args):
     if train_type.lower() == 'single_static':
         train_file = 'examples/singleStatic.py'
         data_path = 'data/simulated-data/single_staticnoforce_data_estimation.tsv'
-        tol = 0.003
+        tol = 0.0005
         sampling_boost = .1
         n_cells = 100
         n_epoch = 500
@@ -59,7 +59,7 @@ def main(args):
     smoothing = 100
     n_samples = 1
     uncertainty = 100
-    seq_momentum = .0
+    seq_momentum = .1
 
     Path('logs/').mkdir(exist_ok=True, parents=True)
     with multiprocessing.Pool(processes=n_cpus) as parallel:
