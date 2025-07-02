@@ -18,7 +18,7 @@ N_PROTEINS = 20
 N_CELLS = 100
 
 MIN_PRECISION = 1e-8
-MAX_VAL = 2.
+MAX_VAL = 5.
 
 
 def get_parameters(**kwargs) -> Dict:
