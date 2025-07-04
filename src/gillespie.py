@@ -19,6 +19,11 @@ from src.errors import ReactionError, ValueNotInitialized
 
 # Globally show raised warnings when using this module
 warnings.simplefilter('always', UserWarning)
+try: 
+    plt.switch_backend('TkAgg')
+except ImportError:
+    # don't switch if not available or cannot be run on server environment
+    pass
 
 
 class GillespieSampler:
