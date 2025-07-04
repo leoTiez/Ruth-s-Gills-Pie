@@ -37,7 +37,7 @@ def main(args):
         tol = 0.0005
         sampling_boost = .1
         n_cells = 100
-        n_epoch = 500
+        n_epoch = 1000
     elif train_type.lower() == 'single_force':
         train_file = 'examples/singleForce.py'
         data_path = 'data/simulated-data/single_forceforce_data_estimation.tsv'
