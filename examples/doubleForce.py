@@ -68,7 +68,7 @@ def get_data(
         state_dna_species_dict: Dict[str, int],
         state_dna_dict: Dict[str, int],
         do_train: str = 'False',
-        data_path: str = 'data/simulated-data/force_data_estimation.tsv',
+        data_path: str = 'data/simulated-data/mean_double_force.tsv',
         **kwargs
 ) -> Tuple[torch.Tensor | None, torch.Tensor | None, List[Tuple[str, int, int]] | None, List[str] | None]:
     do_train = do_train == 'True'
