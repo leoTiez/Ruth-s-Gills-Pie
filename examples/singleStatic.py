@@ -55,7 +55,7 @@ def get_data(
     if do_train:
         data = torch.tensor(np.loadtxt(data_path, delimiter='\t'))
         data = torch.stack([data, data])
-        time_points = torch.tensor([130, 150])
+        time_points = torch.tensor([80, 100])
         data_description = [
             (DNA_SPECIES_REACTANT, interact_dna_species_dict[EX_PROTEIN], state_dna_species_dict[UNSPECIFIC]),
         ]
@@ -142,7 +142,7 @@ def define_rules(device: Union[torch.device, int] = torch.device('cpu'), do_trai
             (EX_PROTEIN, ASSOCIATED_STATE, DNA_SPECIES_REACTANT),
             (DNA_TRANSCRIPT, DEFAULT, DNA_REACTANT)
         ]],
-        c=5e-4 if not do_train else np.exp(-15. * np.random.random()) * (MAX_VAL - MIN_PRECISION) + MIN_PRECISION
+        c=2e-4 if not do_train else np.exp(-15. * np.random.random()) * (MAX_VAL - MIN_PRECISION) + MIN_PRECISION
     )
     # Dissociation
     rule_set.add_rule(
