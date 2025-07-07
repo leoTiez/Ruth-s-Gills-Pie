@@ -32,7 +32,7 @@ def main(args):
     if sim_type.lower() == 'single_static':
         sim_file = 'examples/singleStatic.py'
         n_cells = 100
-        sampling_time = 130
+        sampling_time = 80
     elif sim_type.lower() == 'single_force':
         sim_file = 'examples/singleForce.py'
         n_cells = 20
